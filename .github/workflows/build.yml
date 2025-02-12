@@ -39,7 +39,7 @@ jobs:
     runs-on: macos-latest
     
     steps:
-    - uses: actions/checkout@4
+    - uses: actions/checkout@v4
     
     - name: Setup Node.js
       uses: actions/setup-node@v4
