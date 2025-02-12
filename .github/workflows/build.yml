@@ -1,0 +1,86 @@
+name: Build ROES Utility
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  # Allow manual trigger
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        
+    - name: Install dependencies
+      run: npm install
+      
+    - name: Build CSS
+      run: npm run build:css
+      
+    - name: Build Windows app
+      run: npm run make
+      
+    - name: Upload Windows artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: windows-build
+        path: dist/*.exe
+
+  build-macos:
+    runs-on: macos-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        
+    - name: Install dependencies
+      run: npm install
+      
+    - name: Build CSS
+      run: npm run build:css
+      
+    - name: Build macOS app
+      run: npm run make
+      
+    - name: Upload macOS artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: macos-build
+        path: |
+          dist/*.dmg
+          dist/*.zip
+
+  create-release:
+    needs: [build-windows, build-macos]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: Download all artifacts
+      uses: actions/download-artifact@v3
+      
+    - name: Create Release
+      uses: softprops/action-gh-release@v1
+      with:
+        name: Release ${{ github.sha }}
+        tag_name: v${{ github.run_number }}
+        files: |
+          windows-build/*.exe
+          macos-build/*.dmg
+          macos-build/*.zip
+        draft: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 

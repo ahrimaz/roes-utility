@@ -1,0 +1,34 @@
+{
+  "name": "richmondproblab-roes-utility",
+  "version": "1.0.0",
+  "description": "Assists in refreshing ROES, backing up, and restoring favorites and packages",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "watch": "npx tailwindcss -i ./src/input.css -o ./src/styles.css --watch",
+    "make": "electron-builder",
+    "build:css": "npx tailwindcss -i ./src/input.css -o ./src/styles.css"
+  },
+  "build": {
+    "appId": "com.richmondproblab.roes.utility",
+    "productName": "RichmondProLab ROES Utility",
+    "win": {
+      "target": "nsis"
+    },
+    "linux": {
+      "target": "deb"
+    }
+  },
+  "devDependencies": {
+    "@electron-forge/cli": "^7.6.1",
+    "@electron-forge/maker-deb": "^7.6.1",
+    "@electron-forge/maker-dmg": "^7.6.1",
+    "@electron-forge/maker-squirrel": "^7.6.1",
+    "@electron-forge/maker-zip": "^7.6.1",
+    "autoprefixer": "^10.4.20",
+    "electron": "^34.1.1",
+    "electron-builder": "^25.1.8",
+    "postcss": "^8.5.2",
+    "tailwindcss": "^4.0.6"
+  }
+}
