@@ -79,12 +79,14 @@ jobs:
     - name: Create Release
       uses: softprops/action-gh-release@v1
       with:
-        name: Release ${{ github.sha }}
+        name: Release v${{ github.run_number }}
         tag_name: v${{ github.run_number }}
         files: |
           windows-build/*.exe
           macos-build/*.dmg
           macos-build/*.zip
-        draft: true
+        draft: false
+        prerelease: false
+        generate_release_notes: true
       env:
         GITHUB_TOKEN: ${{ secrets.GH_TOKEN }} 
