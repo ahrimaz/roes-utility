@@ -17,7 +17,6 @@
     "win": {
       "target": "nsis",
       "publisherName": "Richmond Professional Lab",
-      "icon": "build/icon.ico",
       "artifactName": "${productName}-Setup-${version}.exe",
       "verifyUpdateCodeSignature": false
     },
@@ -27,9 +26,6 @@
       "allowToChangeInstallationDirectory": true,
       "uninstallDisplayName": "${productName}",
       "createDesktopShortcut": true,
-      "installerIcon": "build/icon.ico",
-      "uninstallerIcon": "build/icon.ico",
-      "installerHeaderIcon": "build/icon.ico",
       "menuCategory": true,
       "displayLanguageSelector": false
     }
