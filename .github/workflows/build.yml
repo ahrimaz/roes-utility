@@ -26,16 +26,27 @@ jobs:
     - name: Build CSS
       run: npm run build:css
       
+    - name: Decode certificate
+      run: |
+        echo "${{ secrets.WINDOWS_PFX_BASE64 }}" | base64 --decode > cert.pfx
+      shell: bash
+      
     - name: Build Windows app
       run: npm run make
       env:
         GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        CERTIFICATE_PASSWORD: ${{ secrets.CERTIFICATE_PASSWORD }}
       
     - name: Upload Windows artifacts
       uses: actions/upload-artifact@v4
       with:
         name: windows-build
         path: dist/*.exe
+        
+    - name: Cleanup certificate
+      if: always()
+      run: rm -f cert.pfx
+      shell: bash
 
   create-release:
     needs: [build-windows]
