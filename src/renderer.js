@@ -6,7 +6,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const restoreBtn = document.getElementById('restoreBtn');
     const processStatus = document.getElementById('processStatus');
     const processText = document.getElementById('processText');
-    const progressList = document.getElementById('progressList');
 
     // Add new modal elements
     const modalContainer = document.getElementById('modalContainer');
@@ -19,20 +18,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeRefresh = document.getElementById('closeRefresh');
     const modalProgressList = document.getElementById('modalProgressList');
 
-    function updateProgress(message, status = 'pending') {
-        const item = document.createElement('div');
-        item.className = `flex items-center space-x-2 ${status === 'success' ? 'text-green-600' : status === 'error' ? 'text-red-600' : 'text-gray-600'}`;
-        item.innerHTML = `
-            <span class="w-4 h-4 inline-block">
-                ${status === 'success' ? '✓' : status === 'error' ? '✗' : '○'}
-            </span>
-            <span>${message}</span>
-        `;
-        progressList.appendChild(item);
-    }
-
     function clearProgress() {
-        progressList.innerHTML = '';
+        modalProgressList.innerHTML = '';
     }
 
     function showModal() {
@@ -80,14 +67,14 @@ document.addEventListener('DOMContentLoaded', () => {
     backupBtn.addEventListener('click', () => {
         backupBtn.disabled = true;
         clearProgress();
-        updateProgress('Starting template backup...', 'pending');
+        updateModalProgress('Starting template backup...', 'pending');
         ipcRenderer.send('backup-templates');
     });
 
     restoreBtn.addEventListener('click', () => {
         restoreBtn.disabled = true;
         clearProgress();
-        updateProgress('Starting template restoration...', 'pending');
+        updateModalProgress('Starting template restoration...', 'pending');
         ipcRenderer.send('restore-templates');
     });
 
@@ -96,12 +83,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     ipcRenderer.on('backup-progress', (event, { message, status }) => {
-        updateProgress(message, status);
+        updateModalProgress(message, status);
         backupBtn.disabled = false;
     });
 
     ipcRenderer.on('restore-progress', (event, { message, status }) => {
-        updateProgress(message, status);
+        updateModalProgress(message, status);
         restoreBtn.disabled = false;
     });
 
