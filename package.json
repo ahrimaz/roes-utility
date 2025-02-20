@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Assists in refreshing ROES, backing up, and restoring favorites and packages",
   "main": "main.js",
+  "author": "Richmond Professional Lab",
   "scripts": {
     "start": "electron .",
     "watch": "tailwindcss -i ./src/input.css -o ./src/styles.css --watch",
@@ -12,11 +13,20 @@
   "build": {
     "appId": "com.richmondproblab.roes.utility",
     "productName": "RichmondProLab ROES Utility",
+    "copyright": "Copyright © 2024 Richmond Professional Lab",
     "win": {
-      "target": "nsis"
+      "target": "nsis",
+      "publisherName": "Richmond Professional Lab",
+      "icon": "build/icon.ico"
     },
-    "linux": {
-      "target": "deb"
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": false,
+      "deleteAppDataOnUninstall": false,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "RichmondProLab ROES Utility"
     }
   },
   "dependencies": {

@@ -37,38 +37,8 @@ jobs:
         name: windows-build
         path: dist/*.exe
 
-  build-macos:
-    runs-on: macos-latest
-    
-    steps:
-    - uses: actions/checkout@v4
-    
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '18'
-        
-    - name: Install dependencies
-      run: npm install
-      
-    - name: Build CSS
-      run: npm run build:css
-      
-    - name: Build macOS app
-      run: npm run make
-      env:
-        GH_TOKEN: ${{ secrets.GH_TOKEN }}
-      
-    - name: Upload macOS artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: macos-build
-        path: |
-          dist/*.dmg
-          dist/*.zip
-
   create-release:
-    needs: [build-windows, build-macos]
+    needs: [build-windows]
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     
@@ -83,8 +53,6 @@ jobs:
         tag_name: v${{ github.run_number }}
         files: |
           windows-build/*.exe
-          macos-build/*.dmg
-          macos-build/*.zip
         draft: false
         prerelease: false
         generate_release_notes: true
