@@ -15,13 +15,19 @@
     "productName": "RichmondProLab ROES Utility",
     "copyright": "Copyright © 2024 Richmond Professional Lab",
     "win": {
-      "target": [
-        {
-          "target": "portable",
-          "arch": ["x64"]
-        }
-      ],
-      "artifactName": "${productName}-${version}.exe"
+      "target": "nsis",
+      "publisherName": "Richmond Professional Lab",
+      "artifactName": "${productName}-Setup-${version}.exe",
+      "verifyUpdateCodeSignature": false
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": true,
+      "allowToChangeInstallationDirectory": true,
+      "uninstallDisplayName": "${productName}",
+      "createDesktopShortcut": true,
+      "menuCategory": true,
+      "displayLanguageSelector": false
     }
   },
   "dependencies": {
