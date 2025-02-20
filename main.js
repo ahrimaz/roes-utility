@@ -99,45 +99,86 @@ async function cleanupROES(win) {
     const roesPath = path.join(userProfile, '.RichmondProLabROES');
     const roesCachePath = path.join(userProfile, '.roescache/RichmondProLabROES');
 
+    // Helper function to add delay
+    const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+
     try {
-        // Check ROES directory
+        // Initial check
+        win.webContents.send('cleanup-progress', {
+            message: 'Checking ROES directories...',
+            status: 'pending'
+        });
+        await delay(800);
+
         await fs.access(roesPath);
+        win.webContents.send('cleanup-progress', {
+            message: 'Located ROES configuration directory',
+            status: 'success'
+        });
+        await delay(500);
         
         // Files to delete in .RichmondProLabROES
         const roesFiles = ['RichmondProLabROES.properties', 'Colors.xml', 'Customer.xml', 'Paymentinfo.enc'];
         
+        win.webContents.send('cleanup-progress', {
+            message: 'Starting configuration cleanup...',
+            status: 'pending'
+        });
+        await delay(500);
+
         for (const file of roesFiles) {
             try {
                 await fs.unlink(path.join(roesPath, file));
                 win.webContents.send('cleanup-progress', {
-                    message: `Deleted ${file}`,
+                    message: `Removed ${file}`,
                     status: 'success'
                 });
+                await delay(300); // Small delay between each file
             } catch (err) {
                 if (err.code !== 'ENOENT') {
                     win.webContents.send('cleanup-progress', {
-                        message: `Failed to delete ${file}: ${err.message}`,
+                        message: `Failed to remove ${file}: ${err.message}`,
                         status: 'error'
                     });
+                    await delay(300);
                 }
             }
         }
 
         // Handle .roescache directory
+        win.webContents.send('cleanup-progress', {
+            message: 'Checking cache directory...',
+            status: 'pending'
+        });
+        await delay(800);
+
         try {
             await fs.access(roesCachePath);
-            const cacheFile = 'RichmondProLabROES.xml.enc';  // Corrected filename
+            win.webContents.send('cleanup-progress', {
+                message: 'Located cache directory',
+                status: 'success'
+            });
+            await delay(500);
+
+            const cacheFile = 'RichmondProLabROES.xml.enc';
+
+            win.webContents.send('cleanup-progress', {
+                message: 'Removing cached data...',
+                status: 'pending'
+            });
+            await delay(500);
 
             try {
                 await fs.unlink(path.join(roesCachePath, cacheFile));
                 win.webContents.send('cleanup-progress', {
-                    message: `Deleted ${cacheFile}`,
+                    message: 'Cache data removed successfully',
                     status: 'success'
                 });
+                await delay(500);
             } catch (err) {
                 if (err.code !== 'ENOENT') {
                     win.webContents.send('cleanup-progress', {
-                        message: `Failed to delete cache file: ${err.message}`,
+                        message: `Failed to remove cache: ${err.message}`,
                         status: 'error'
                     });
                 }
@@ -151,8 +192,15 @@ async function cleanupROES(win) {
             }
         }
 
+        await delay(800);
         win.webContents.send('cleanup-progress', {
-            message: 'Cleanup completed successfully',
+            message: 'Verifying cleanup completion...',
+            status: 'pending'
+        });
+        await delay(1000);
+
+        win.webContents.send('cleanup-progress', {
+            message: 'ROES refresh completed successfully',
             status: 'success'
         });
     } catch (err) {
@@ -162,6 +210,7 @@ async function cleanupROES(win) {
         });
     }
 
+    await delay(500);
     win.webContents.send('cleanup-complete');
 }
 
@@ -189,6 +238,9 @@ async function backupTemplates(win) {
                 message: 'Templates backed up successfully',
                 status: 'success'
             });
+        } else {
+            // Send a message to re-enable the button when dialog is cancelled
+            win.webContents.send('backup-cancelled');
         }
     } catch (err) {
         win.webContents.send('backup-progress', {
@@ -229,6 +281,9 @@ async function restoreTemplates(win) {
                 message: 'Templates restored successfully',
                 status: 'success'
             });
+        } else {
+            // Send a message to re-enable the button when dialog is cancelled
+            win.webContents.send('restore-cancelled');
         }
     } catch (err) {
         win.webContents.send('restore-progress', {
