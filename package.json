@@ -15,9 +15,19 @@
     "productName": "RichmondProLab ROES Utility",
     "copyright": "Copyright © 2024 Richmond Professional Lab",
     "win": {
-      "target": "nsis",
+      "target": [
+        {
+          "target": "portable",
+          "arch": ["x64"]
+        }
+      ],
       "publisherName": "Richmond Professional Lab",
-      "icon": "build/icon.ico"
+      "icon": "build/icon.ico",
+      "artifactName": "${productName}-Setup-${version}.exe",
+      "legalTrademarks": "Richmond Professional Lab",
+      "fileDescription": "ROES Utility for Richmond Professional Lab",
+      "originalFilename": "RichmondProLab-ROES-Utility.exe",
+      "requestedExecutionLevel": "asInvoker"
     },
     "nsis": {
       "oneClick": true,
