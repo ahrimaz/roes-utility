@@ -27,7 +27,9 @@ function startProcessCheck(win) {
 function createWindow() {
     const win = new BrowserWindow({
         width: 800,
-        height: 600,
+        height: 700,
+        minWidth: 600,
+        minHeight: 700,
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false
@@ -38,9 +40,17 @@ function createWindow() {
 
     win.loadFile('src/index.html');
     
-    // Start process checking when window is ready
+    // Optional: Automatically adjust window height to content
     win.webContents.on('did-finish-load', () => {
-        startProcessCheck(win);
+        // Get the exact content height
+        win.webContents.executeJavaScript(`
+            document.body.offsetHeight
+        `).then(height => {
+            const windowHeight = height + 40; // Add some padding for window chrome
+            const currentSize = win.getSize();
+            win.setSize(currentSize[0], windowHeight);
+            startProcessCheck(win);
+        });
     });
 
     // Clean up interval when window is closed
